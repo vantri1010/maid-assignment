@@ -22,13 +22,12 @@ func CreateJob(database mongo.Database) gin.HandlerFunc {
 		store := dbHandler.NewJobRepo(database, "job")
 		biz := biz.NewCreateJobHandler(store)
 
-		if err := biz.CreateAndSend(c.Request.Context(), &data); err != nil {
+		_id, err := biz.CreateAndSend(c.Request.Context(), &data)
+		if err != nil {
 			panic(err)
 		}
 
-		c.JSON(http.StatusOK, gin.H{
-			"message": "Task created successfully",
-		})
+		c.JSON(http.StatusCreated, model.NewSuccessResponse(_id))
 
 	}
 }
